@@ -1,6 +1,5 @@
 import Notiflix from 'notiflix';
 import "notiflix/dist/notiflix-3.2.5.min.css";
-import axios from 'axios';
 import { getRefs } from "./refs";
 
 const axios = require('axios').default;
