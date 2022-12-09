@@ -5,7 +5,7 @@ export function renderMarkupList(element, imgArr, markupCreating) {
 export function markupCreating({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) {
     return `
     
-        <div class="photo-card">
+        <div class="photo-card animate__animated animate__zoomIn">
         <a class="big-photo" href="${largeImageURL}">
          <div class="img-wrapper">
             <img class="img" src="${webformatURL}" alt="${tags}" width="380" loading="lazy" />

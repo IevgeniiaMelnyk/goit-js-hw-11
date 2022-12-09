@@ -10,19 +10,19 @@ export default class ImgApiServis {
         this.userRequest = '';
         this.page = 1;
         this.totalHits = 0;
+        this.perPage = 40;
     }
 
     async fetchImgs() {
         const URL = 'https://pixabay.com/api/';
         const KEY = '25319761-84ef76f9b3bcf2090a4cd8b86';
-        const perPage = 40;
-        const options = `&image_type=photo&orientation=horizontal&safesearch=true&per_page=${perPage}&page=${this.page}`
+        const options = `&image_type=photo&orientation=horizontal&safesearch=true&per_page=${this.perPage}&page=${this.page}`
         
         try {
             const respons = await axios.get(`${URL}?key=${KEY}&q=${this.userRequest}${options}`);
             const images = await respons;
             this.totalHits = images.data.totalHits;
-            this.page += 1;
+            
             const answerProperties = images.data.hits.map(imgProp => (
                     {
                         webformatURL: imgProp.webformatURL,
@@ -46,6 +46,10 @@ export default class ImgApiServis {
 
     set request(newUserRequest) {
         this.userRequest = newUserRequest;
+    }
+    
+    incrementPage() {
+        this.page += 1;
     }
 
     reset() {

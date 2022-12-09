@@ -116,14 +116,13 @@
 }
 
 .message {
-  margin-bottom: 35px;
+  margin-bottom: 30px;
+  margin-top: 45px;
   text-align: center;
   color: var(--color-text);
   font-size: 16px;
 }
-// btn
-.invisible {
-  opacity: 0;
+
+.is-hidden {
+  display: none;
 }
-
-
