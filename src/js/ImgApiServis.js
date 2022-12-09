@@ -55,6 +55,7 @@ export default class ImgApiServis {
     reset() {
         refs.gallery.innerHTML = '';
         this.page = 1;
+        this.totalHits = 0;
     }
 
     successMess() {

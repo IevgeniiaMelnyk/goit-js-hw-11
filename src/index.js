@@ -60,22 +60,23 @@ function onSearch(e) {
     });            
 };
 
-const onEntry = entries => {
+function onEntry (entries) {
     entries.forEach(entry => {
-                                            
-        if (entry.isIntersecting && imgApiServis.userRequest !== '') {
+        let pageCount = imgApiServis.totalHits / imgApiServis.perPage + 1;
+                                                    
+        if (entry.isIntersecting && imgApiServis.userRequest !== '' && pageCount > imgApiServis.page) {
             imgApiServis.fetchImgs()
                 .then(answerProperties => {
                     renderRefreshScrol(refs.gallery, answerProperties, markupCreating);
                     imgApiServis.incrementPage();
                 })
-                .finally(() => refs.andMessage.classList.remove('is-hidden'));
+            .finally(() => refs.andMessage.classList.remove('is-hidden'));
         };
     });
 };
 
-const observer = new IntersectionObserver(onEntry, {
-  rootMargin: '150px',
+const observer = new IntersectionObserver((onEntry), {
+  rootMargin: '500px',
 });
 
 observer.observe(refs.sentinel);
