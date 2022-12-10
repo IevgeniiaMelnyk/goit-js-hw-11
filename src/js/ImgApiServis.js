@@ -16,22 +16,29 @@ export default class ImgApiServis {
     async fetchImgs() {
         const URL = 'https://pixabay.com/api/';
         const KEY = '25319761-84ef76f9b3bcf2090a4cd8b86';
-        const options = `&image_type=photo&orientation=horizontal&safesearch=true&per_page=${this.perPage}&page=${this.page}`
+        
+        const searchParams = new URLSearchParams({
+            image_type: 'photo',
+            orientation: 'horizontal',
+            safesearch: true,
+            per_page: `${this.perPage}`,
+            page: `${this.page}`,
+        });
         
         try {
-            const respons = await axios.get(`${URL}?key=${KEY}&q=${this.userRequest}${options}`);
+            const respons = await axios.get(`${URL}?key=${KEY}&q=${this.userRequest}&${searchParams}`);
             const images = await respons;
             this.totalHits = images.data.totalHits;
             
-            const answerProperties = images.data.hits.map(imgProp => (
+            const answerProperties = images.data.hits.map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => (
                     {
-                        webformatURL: imgProp.webformatURL,
-                        largeImageURL: imgProp.largeImageURL,
-                        tags: imgProp.tags,
-                        likes: imgProp.likes,
-                        views: imgProp.views,
-                        comments: imgProp.comments,
-                        downloads: imgProp.downloads
+                        webformatURL,
+                        largeImageURL,
+                        tags,
+                        likes,
+                        views,
+                        comments,
+                        downloads,
                     }
                 ));
                 return answerProperties;  
@@ -62,8 +69,12 @@ export default class ImgApiServis {
         Notiflix.Notify.success(`Hooray! We found ${this.totalHits} images.`);
     }
     
-    infoMess() {
+    infoMessNoImg() {
         Notiflix.Notify.info('Sorry, there are no images matching your search query. Please try again.');
+    }
+
+    infoMessEnd() {
+        Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
     }
 
     errorMess(error) {

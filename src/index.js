@@ -11,6 +11,7 @@ gallery.on('show.simplelightbox');
 const imgApiServis = new ImgApiServis();
 
 
+
 refs.loadmoreBtn.classList.add('is-hidden');
 refs.andMessage.classList.add('is-hidden');
 
@@ -20,7 +21,8 @@ refs.searchForm.addEventListener('submit', onSearch);
 function onSearch(e) {
     e.preventDefault();
     imgApiServis.reset();
-        
+    observer.unobserve(refs.sentinel);
+            
     imgApiServis.userRequest = e.target[0].value.toLowerCase().trim().replaceAll(' ', '+');
         
     if (imgApiServis.userRequest === '') {
@@ -33,20 +35,21 @@ function onSearch(e) {
         .then(answerProperties => {
         
         if (answerProperties.length === 0) {
-            imgApiServis.infoMess();
-            refs.loadmoreBtn.classList.add('is-hidden');
+            // refs.loadmoreBtn.classList.add('is-hidden');
             refs.andMessage.classList.add('is-hidden');
+            imgApiServis.infoMessNoImg();
             return;
         };
 
         if (answerProperties.length < 40) {
             imgApiServis.successMess();
             refs.andMessage.classList.remove('is-hidden');
-            refs.loadmoreBtn.classList.add('is-hidden');
+            // refs.loadmoreBtn.classList.add('is-hidden');
             
             renderMarkupList(refs.gallery, answerProperties, markupCreating);
             gallery.refresh();
             imgApiServis.incrementPage(); 
+            imgApiServis.infoMessEnd();
             return;
         };
 
@@ -55,32 +58,38 @@ function onSearch(e) {
         // refs.loadmoreBtn.classList.remove('is-hidden');
         renderMarkupList(refs.gallery, answerProperties, markupCreating);
         gallery.refresh();
-        imgApiServis.incrementPage();    
+        imgApiServis.incrementPage();
+        observer.observe(refs.sentinel);    
             
     });            
 };
 
+// Запрос IntersectionObserver()
 function onEntry (entries) {
     entries.forEach(entry => {
-        let pageCount = imgApiServis.totalHits / imgApiServis.perPage + 1;
-                                                    
-        if (entry.isIntersecting && imgApiServis.userRequest !== '' && pageCount > imgApiServis.page) {
+        let pageCount = Math.ceil(imgApiServis.totalHits / imgApiServis.perPage);
+                
+        if (entry.isIntersecting && imgApiServis.userRequest !== '') {
             imgApiServis.fetchImgs()
-                .then(answerProperties => {
+                .then(answerProperties => {                 
+                    if (pageCount === imgApiServis.page) {
+                        observer.unobserve(refs.sentinel);
+                        refs.andMessage.classList.remove('is-hidden');
+                        imgApiServis.infoMessEnd();
+                        renderRefreshScrol(refs.gallery, answerProperties, markupCreating);
+                        return;
+                    };
                     renderRefreshScrol(refs.gallery, answerProperties, markupCreating);
                     imgApiServis.incrementPage();
-                })
-            .finally(() => refs.andMessage.classList.remove('is-hidden'));
+                }); 
         };
     });
 };
-
 const observer = new IntersectionObserver((onEntry), {
-  rootMargin: '500px',
+  rootMargin: '100px',
 });
 
-observer.observe(refs.sentinel);
-
+// Запрос по кнопке
 // function onClickLoadMore() {
 //     imgApiServis.fetchImgs()
 //         .then(answerProperties => {       
