@@ -67,7 +67,7 @@ function onSearch(e) {
 // Запрос IntersectionObserver()
 function onEntry (entries) {
     entries.forEach(entry => {
-        let pageCount = Math.ceil(imgApiServis.totalHits / imgApiServis.perPage);
+        const pageCount = Math.ceil(imgApiServis.totalHits / imgApiServis.perPage);
                 
         if (entry.isIntersecting && imgApiServis.userRequest !== '') {
             imgApiServis.fetchImgs()

@@ -26,8 +26,7 @@ export default class ImgApiServis {
         });
         
         try {
-            const respons = await axios.get(`${URL}?key=${KEY}&q=${this.userRequest}&${searchParams}`);
-            const images = await respons;
+            const images = await axios.get(`${URL}?key=${KEY}&q=${this.userRequest}&${searchParams}`);
             this.totalHits = images.data.totalHits;
             
             const answerProperties = images.data.hits.map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => (
